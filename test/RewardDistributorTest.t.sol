@@ -27,8 +27,9 @@ contract RewardDistributorTest is Test {
         sAzt = new sAZT(address(gov), "AZT", "AZT");
         tracker = new RewardTracker(address(gov), address(sAzp));
         distributor = new RewardDistributor(address(gov), address(sAzt), address(tracker));
+        vm.prank(admin);
+        tracker.setRewardDistributor(address(distributor));
     }
-
 
     function test_SetGov() external {
         address admin = address(0x1234);
@@ -48,9 +49,9 @@ contract RewardDistributorTest is Test {
 
     function test_SetRewardTracker() external {
         address admin = address(0x1234);
-        vm.prank(admin);
+        vm.startPrank(admin);
         distributor.setRewardTracker(address(1));
-        address newTractorFromContract = distributor.gov();
+        address newTractorFromContract = distributor.rewardTracker();
 
         assertEq(newTractorFromContract, address(1), "test result: fail3");
 
@@ -61,5 +62,38 @@ contract RewardDistributorTest is Test {
         address newTractorFromContract = distributor.gov();
 
         assertEq(newTractorFromContract, address(1), "test result: fail4");
+    }
+
+    function test_SetLastDistributionTime() external {
+        address admin = address(0x1234);
+        vm.startPrank(admin);
+        distributor.setLastDistributionTime();
+        uint256 lastTime = distributor.lastDistributionTime();
+
+        assertEq(block.timestamp, lastTime, "test result: fail5");
+
+    }
+
+    function testFail_SetLastDistributionTime() external {
+        distributor.setLastDistributionTime();
+        uint256 lastTime = distributor.lastDistributionTime();
+
+        assertEq(block.timestamp, lastTime, "test result: fail6");
+    }
+
+    function test_SetTokensPerInterval() external {
+        address admin = address(0x1234);
+        vm.startPrank(admin);
+        distributor.setLastDistributionTime();
+        uint256 before = distributor.tokensPerInterval();
+        uint256 newSpeed = 100;
+        distributor.setTokensPerInterval(newSpeed);
+        uint256 after1 = distributor.tokensPerInterval();
+
+        assertEq(before + newSpeed, after1, "test result: fail7");
+    }
+
+    function test_PendingRewards() external {
+
     }
 }
