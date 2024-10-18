@@ -48,7 +48,7 @@ contract Governable is IGovernable {
     /// @param minter new minter
     function addAZTMinter(address minter) external override onlyGov {
         require(minter != address(0), "G_A1");
-        sAZPMinters[minter] = true;
+        sAZTMinters[minter] = true;
 
         emit AZTMinterAdded(minter);
     }
@@ -57,7 +57,7 @@ contract Governable is IGovernable {
     /// @param minter deprecated minter
     function removeAZTMinter(address minter) external override onlyGov {
         require(minter != address(0), "G_R1");
-        sAZPMinters[minter] = false;
+        sAZTMinters[minter] = false;
 
         emit AZTMinterRemoved(minter);
     }
