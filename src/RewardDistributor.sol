@@ -10,7 +10,7 @@ import {IBaseToken} from "./interfaces/IBaseToken.sol";
 contract RewardDistributor is IRewardDistributor {
     address public gov;                             // manager contract address
     address public override rewardToken;            // reward token address
-    uint256 public override tokensPerInterval;      // reward speed, scale 20
+    uint256 public override tokensPerInterval;      // reward speed
     uint256 public lastDistributionTime;            // last distribution timestamp
     address public rewardTracker;                   // tracker address
 
@@ -51,7 +51,7 @@ contract RewardDistributor is IRewardDistributor {
     }
 
     /// @notice set reward speed
-    /// @param rewardSpeed reward speed , scale 20
+    /// @param rewardSpeed reward speed
     function setTokensPerInterval(uint256 rewardSpeed) external override onlyGov {
         require(lastDistributionTime != 0, "R_ST0");
         // calculate reward until last update time
