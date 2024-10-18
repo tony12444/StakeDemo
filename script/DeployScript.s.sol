@@ -28,11 +28,11 @@ contract DeployScript is Script {
         gov.addAZTMinter(address(distributor));
 
         sAzp.setInPrivateTransferMode(true);
-        sAzp.setHandler(address(tracker));
+        sAzp.setHandler(address(tracker), true);
 
         sAzt.setInPrivateTransferMode(true);
-        sAzt.setHandler(address(tracker));
-        sAzt.setHandler(address(distributor));
+        sAzt.setHandler(address(tracker), true);
+        sAzt.setHandler(address(distributor), true);
 
         tracker.setRewardDistributor(address(distributor));
         tracker.addStakeToken(address(azt));
