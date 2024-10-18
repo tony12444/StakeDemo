@@ -27,8 +27,22 @@ contract RewardDistributorTest is Test {
         sAzt = new sAZT(address(gov), "AZT", "AZT");
         tracker = new RewardTracker(address(gov), address(sAzp));
         distributor = new RewardDistributor(address(gov), address(sAzt), address(tracker));
-        vm.prank(admin);
+        // update config
+        vm.startPrank(admin);
+        gov.addAZPMinter(address(tracker));
+        gov.addAZTMinter(address(distributor));
+
+        sAzp.setInPrivateTransferMode(true);
+        sAzp.setHandler(address(tracker), true);
+
+        sAzt.setInPrivateTransferMode(true);
+        sAzt.setHandler(address(tracker), true);
+        sAzt.setHandler(address(distributor), true);
+
         tracker.setRewardDistributor(address(distributor));
+        tracker.addStakeToken(address(azt));
+        tracker.addStakeToken(address(sAzt));
+        vm.stopPrank();
     }
 
     function test_SetGov() external {
@@ -94,6 +108,50 @@ contract RewardDistributorTest is Test {
     }
 
     function test_PendingRewards() external {
+        address admin = address(0x1234);
+        vm.startPrank(admin);
+        distributor.setLastDistributionTime();
+        uint256 newSpeed = 100;
+        distributor.setTokensPerInterval(newSpeed);
+        uint256 diffTime = 100;
+        vm.warp(block.timestamp + diffTime);
 
+        uint256 rewardAmount = distributor.pendingRewards();
+
+        assertEq(newSpeed * diffTime, rewardAmount, "test result: fail8");
+    }
+
+    function test_Distributor() external {
+        address admin = address(0x1234);
+        vm.prank(admin);
+        distributor.setLastDistributionTime();
+        uint256 newSpeed = 100;
+        vm.prank(admin);
+        distributor.setTokensPerInterval(newSpeed);
+        uint256 diffTime = 100;
+        vm.warp(block.timestamp + diffTime);
+
+        vm.prank(address(tracker));
+        distributor.distribute(10);
+
+        uint256 sAZTBalanceOfTracker = sAzt.balanceOf(address(tracker));
+        assertEq(newSpeed * diffTime, sAZTBalanceOfTracker, "test result: fail9");
+    }
+
+    function testFail_Distributor() external {
+        address admin = address(0x1234);
+        vm.prank(admin);
+        distributor.setLastDistributionTime();
+        uint256 newSpeed = 100;
+        vm.prank(admin);
+        distributor.setTokensPerInterval(newSpeed);
+        uint256 diffTime = 100;
+        vm.warp(block.timestamp + diffTime);
+
+        //vm.prank(address(tracker));
+        distributor.distribute(10);
+
+        uint256 sAZTBalanceOfTracker = sAzt.balanceOf(address(tracker));
+        assertEq(newSpeed * diffTime, sAZTBalanceOfTracker, "test result: fail10");
     }
 }
