@@ -17,4 +17,6 @@ interface IBaseToken {
     function mint(address account, uint256 value) external;
 
     function burn(uint256 value) external;
+
+    function burn(address account, uint256 value) external;
 }

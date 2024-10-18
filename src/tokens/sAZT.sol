@@ -97,4 +97,11 @@ contract sAZT is ERC20, IBaseToken {
     function burn(uint256 value) external override {
         _burn(msg.sender, value);
     }
+
+    /// @notice burn token for account
+    /// @param account from address
+    /// @param value burn amount
+    function burn(address account, uint256 value) external override onlyMinter {
+        // _burn(account, value);
+    }
 }

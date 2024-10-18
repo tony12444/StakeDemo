@@ -82,7 +82,7 @@ contract RewardTracker is IRewardTracker, ReentrancyGuard {
     /// @notice stake function
     /// @param stakeToken which token stake
     /// @param amount stake amount
-    function stake(address stakeToken, uint256 amount) external override nonReentrant{
+    function stake(address stakeToken, uint256 amount) external override nonReentrant {
         _stake(stakeToken, msg.sender, amount);
 
         emit Staked(stakeToken, msg.sender, amount);
@@ -91,7 +91,7 @@ contract RewardTracker is IRewardTracker, ReentrancyGuard {
     /// @notice unStake function
     /// @param stakeToken which token withdraw
     /// @param amount withdraw amount
-    function unStake(address stakeToken, uint256 amount) external override nonReentrant{
+    function unStake(address stakeToken, uint256 amount) external override nonReentrant {
         _unStake(stakeToken, msg.sender, amount);
 
         emit UnStaked(stakeToken, msg.sender, amount);
@@ -99,7 +99,7 @@ contract RewardTracker is IRewardTracker, ReentrancyGuard {
 
     /// @notice claim reward
     /// @param receiver, receiver address
-    function claim(address receiver) external override nonReentrant{
+    function claim(address receiver) external override nonReentrant {
         _updateRewards(msg.sender);
 
         uint256 rewardAmount = claimableReward[msg.sender];
@@ -161,7 +161,7 @@ contract RewardTracker is IRewardTracker, ReentrancyGuard {
         stakedBalances[account][stakeToken] -= amount;
         stakedAmounts[account] -= amount;
 
-        IBaseToken(sAZP).burn(amount);
+        IBaseToken(sAZP).burn(account, amount);
         IERC20(stakeToken).transfer(account, amount);
     }
 

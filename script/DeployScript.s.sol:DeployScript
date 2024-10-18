@@ -1,0 +1,5 @@
+Script started on Fri Oct 18 14:55:13 2024
+command: --rpc-url https://sepolia.infura.io/v3/14f0131b40b54ec8bd9e0a162bbdc41f --broadcast --verify -vvvv
+script: --rpc-url: No such file or directory
+
+Script done on Fri Oct 18 14:55:13 2024
