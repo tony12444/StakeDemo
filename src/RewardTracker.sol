@@ -20,9 +20,9 @@ contract RewardTracker is IRewardTracker {
 
     mapping(address => bool) public isStakeToken;                                           // is allow stake
     // user => token => staked amount
-    mapping(address => mapping(address => uint256)) public stakedBalances;         // user stake balances by token
+    mapping(address => mapping(address => uint256)) public stakedBalances;                  // user stake balances by token
     // user => amount
-    mapping(address => uint256) public stakedAmounts;                              // user total stake amount
+    mapping(address => uint256) public stakedAmounts;                                       // user total stake amount
     // user => claimable amount
     mapping(address => uint256) public claimableReward;                                     // claimable rewards
     // user => last reward amount per token

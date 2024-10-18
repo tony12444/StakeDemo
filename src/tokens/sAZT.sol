@@ -9,9 +9,9 @@ import {IGovernable} from "../interfaces/IGovernable.sol";
     test token
 */
 contract sAZT is ERC20, IBaseToken {
-    address public gov;
-    bool public inPrivateTransferMode;
-    mapping(address => bool) public isHandler;
+    address public gov;                                                     // manager address
+    bool public inPrivateTransferMode;                                      // private model turn
+    mapping(address => bool) public isHandler;                              // white list address
 
     constructor(address gov_, string memory name_, string memory symbol_) ERC20(name_, symbol_){
         gov = gov_;
@@ -29,24 +29,32 @@ contract sAZT is ERC20, IBaseToken {
         _;
     }
 
+    /// @notice change gov contract address ,only manager
+    /// @param _gov new gov contract address
     function setGov(address _gov) external override onlyGov {
         gov = _gov;
 
         emit GovSettled(_gov);
     }
 
-    ///@notice
+    /// @notice transfer turn，if true transfer token only by whitelist user
+    /// @param _inPrivateTransferMode true or false
     function setInPrivateTransferMode(bool _inPrivateTransferMode) external override onlyGov {
         inPrivateTransferMode = _inPrivateTransferMode;
         emit InPrivateTransferModeSettled(_inPrivateTransferMode);
     }
 
-    ///@notice
+    /// @notice whitelist for token
+    /// @param _handler whitelist address
+    /// @param _isActive true or false
     function setHandler(address _handler, bool _isActive) external override onlyGov {
         isHandler[_handler] = _isActive;
         emit HandlerSettled(_handler, _isActive);
     }
 
+    /// @notice overridden the transfer method in the ERC20 contract
+    /// @param to transfer dst address
+    /// @param value transfer amount
     function transfer(address to, uint256 value) public virtual override returns (bool) {
         address owner = _msgSender();
 
@@ -59,6 +67,10 @@ contract sAZT is ERC20, IBaseToken {
         return true;
     }
 
+    /// @notice overridden the transferFrom method in the ERC20 contract
+    /// @param from transfer asset from address
+    /// @param to transfer dst address
+    /// @param value transfer value
     function transferFrom(address from, address to, uint256 value) public override returns (bool) {
         address spender = _msgSender();
 
@@ -73,15 +85,15 @@ contract sAZT is ERC20, IBaseToken {
         return true;
     }
 
-    ///@notice mint token , only mint by gov
-    ///@param account  mint to account address
-    ///@param value mint amount
+    /// @notice mint token , only mint by gov
+    /// @param account  mint to account address
+    /// @param value mint amount
     function mint(address account, uint256 value) external override onlyMinter {
         _mint(account, value);
     }
 
-    ///@notice burn token
-    ///@param value burn amount
+    /// @notice burn token
+    /// @param value burn amount
     function burn(uint256 value) external override {
         _burn(msg.sender, value);
     }

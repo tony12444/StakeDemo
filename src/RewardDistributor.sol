@@ -69,10 +69,6 @@ contract RewardDistributor is IRewardDistributor {
 
         uint256 timeDiff = block.timestamp - lastDistributionTime;
         uint256 rewardAmount = tokensPerInterval * timeDiff;
-        // transfer reward to tracker address
-        uint256 balance = IERC20(rewardToken).balanceOf(address(this));
-        // if reward balance is enough ,return all balance
-        if (rewardAmount > balance) {rewardAmount = balance;}
 
         return rewardAmount;
     }

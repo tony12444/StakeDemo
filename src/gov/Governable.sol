@@ -17,6 +17,8 @@ contract Governable is IGovernable {
         _;
     }
 
+    /// @notice manager address update func
+    /// @param newGov the new manager address
     function transferGov(address newGov) external override onlyGov {
         require(newGov != address(0), "G_T0");
         gov = newGov;
@@ -24,6 +26,8 @@ contract Governable is IGovernable {
         emit GovSettled(newGov);
     }
 
+    /// @notice add sAZP minter ,only manager
+    /// @param minter new minter
     function addAZPMinter(address minter) external override onlyGov {
         require(minter != address(0), "G_A0");
         sAZPMinters[minter] = true;
@@ -31,6 +35,8 @@ contract Governable is IGovernable {
         emit AZPMinterAdded(minter);
     }
 
+    /// @notice remove sAZP minter ,only manager
+    /// @param minter deprecated minter
     function removeAZPMinter(address minter) external override onlyGov {
         require(minter != address(0), "G_R0");
         sAZPMinters[minter] = false;
@@ -38,6 +44,8 @@ contract Governable is IGovernable {
         emit AZPMinterRemoved(minter);
     }
 
+    /// @notice add sAZT minter ,only manager
+    /// @param minter new minter
     function addAZTMinter(address minter) external override onlyGov {
         require(minter != address(0), "G_A1");
         sAZPMinters[minter] = true;
@@ -45,6 +53,8 @@ contract Governable is IGovernable {
         emit AZTMinterAdded(minter);
     }
 
+    /// @notice remove sAZT minter ,only manager
+    /// @param minter deprecated minter
     function removeAZTMinter(address minter) external override onlyGov {
         require(minter != address(0), "G_R1");
         sAZPMinters[minter] = false;
