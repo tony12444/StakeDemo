@@ -7,8 +7,9 @@ import {IRewardDistributor} from "./interfaces/IRewardDistributor.sol";
 import {IBaseToken} from "./interfaces/IBaseToken.sol";
 import {EnumerableSet} from "openzeppelin-contracts/contracts/utils/structs/EnumerableSet.sol";
 import {IERC20} from "openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
+import {ReentrancyGuard} from "openzeppelin-contracts/contracts/utils/ReentrancyGuard.sol";
 
-contract RewardTracker is IRewardTracker {
+contract RewardTracker is IRewardTracker, ReentrancyGuard {
     using EnumerableSet for EnumerableSet.UintSet;
 
     uint256 public constant PRECISION = 1e20;                                               // rewards precision
@@ -48,7 +49,7 @@ contract RewardTracker is IRewardTracker {
     /// @param token , withdraw token address
     /// @param dst, transfer address
     /// @param amount, transfer amount
-    function withdrawToken(address token, address dst, uint256 amount) external override onlyGov {
+    function withdrawToken(address token, address dst, uint256 amount) external override nonReentrant onlyGov {
         IERC20(token).transfer(dst, amount);
 
         emit WithdrawToken(token, dst, amount);
@@ -81,7 +82,7 @@ contract RewardTracker is IRewardTracker {
     /// @notice stake function
     /// @param stakeToken which token stake
     /// @param amount stake amount
-    function stake(address stakeToken, uint256 amount) external override {
+    function stake(address stakeToken, uint256 amount) external override nonReentrant{
         _stake(stakeToken, msg.sender, amount);
 
         emit Staked(stakeToken, msg.sender, amount);
@@ -90,7 +91,7 @@ contract RewardTracker is IRewardTracker {
     /// @notice unStake function
     /// @param stakeToken which token withdraw
     /// @param amount withdraw amount
-    function unStake(address stakeToken, uint256 amount) external override {
+    function unStake(address stakeToken, uint256 amount) external override nonReentrant{
         _unStake(stakeToken, msg.sender, amount);
 
         emit UnStaked(stakeToken, msg.sender, amount);
@@ -98,7 +99,7 @@ contract RewardTracker is IRewardTracker {
 
     /// @notice claim reward
     /// @param receiver, receiver address
-    function claim(address receiver) external override {
+    function claim(address receiver) external override nonReentrant{
         _updateRewards(msg.sender);
 
         uint256 rewardAmount = claimableReward[msg.sender];
